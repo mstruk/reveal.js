@@ -292,6 +292,44 @@
                                 </section>
 
                                 <section>
+                                      <h2>Mongo GridFS</h2>
+                                      <ul>
+                                         <li>Overloaded term - liveoak module vs. com.mongo.gridfs API</li>
+                                         <li>mongo-gridfs liveoak module adds a filesystem notion on top of mongo gridfs API</li>
+                                         <p>
+                                         <li>Blob storage with mongodb as underlying store</li>
+                                         <li>Scaling and high availability handled by mongodb infrastructure</li>
+                                      </ul>
+
+                                </section>
+ 
+                                <section>
+                                        <h2>Mongo GridFS Features</h2>
+                                        <ul>
+                                            <li>Every file / directory has a unique pathname, and unique oid - two ways of addressing</li>
+                                            <li>Every file / directory can have arbitrary metadata</li>
+                                            <li>Queries can be performed over all files for metadata</li>
+                                            <li>Automatic parent path creation</li>
+                                        </ul>
+                                </section>
+ 
+                                <section>
+                                    <h2>Mongo GridFS URL structure</h2>
+                                    <ul>
+                                        <li>By default bound to /gridfs</li>
+                                        <li>User view of repository: /gridfs/{userid}</li>
+                                        <li>That's where content root begins for pathname navigation</li>
+                                        <li>.files subcollection lists all the files via oid</li>
+                                        <li>.blobs subcollection allows access to blob content via oid</li>
+                                    </ul>
+                                </section>
+
+                                <section>
+                                    <h2><a href="#">[Mongo GridFS]</a></h2>
+                                    <h2>Demo</h2>
+                                </section>
+
+                                <section>
                                        <h2>Wrap-Up</h2>
                                        <ul>
                                          <li>Still a work in progress, things may change</li>
