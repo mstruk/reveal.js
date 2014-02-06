@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>reveal.js - The HTML Presentation Framework</title>
+		<title>[LiveOak Tech Update] - Data Storage</title>
 
 		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
 		<meta name="author" content="Hakim El Hattab">
@@ -37,14 +37,297 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h1>Reveal.js</h1>
-					<h3>HTML Presentations Made Easy</h3>
+					<h2><a href="#">[LiveOak Tech Update]</a></h2>
+					<h2>Data Storage</h2>
 					<p>
-						<small>Created by <a href="http://hakim.se">Hakim El Hattab</a> / <a href="http://twitter.com/hakimel">@hakimel</a></small>
-					</p>
-				</section>
+						<small>Matt Wringe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marko Strukelj</small>
+				        </p>
+                                        <p>		
+ 					        <small><small>February 6, 2014</small></small>
+			         	</p>
+			</section>
 
-				<section>
+			<section>
+				<h2>BaaS Storage in LiveOak</h2>
+				<ul>
+				  <li>data obviously important for applications</li>
+				  <li>distributed off into the cloud to be consumed by multiple client</li>
+                                  <li>centrally managed</li>
+                                  <li>want something to be easy to setup, use, manage and grow</li>
+				</ul>
+			</section>
+
+			<section>
+			       <h2>LiveOak: Current Storage Status</h2>
+			       <ul>
+				 <li>currently support MongoDB
+				 	<ul><li>Using for both generic document storage and blob storage through GridFS</li></ul>
+				 </li>
+				 <li>file based resources with git support</li>
+                                 <li>future to support different databases and other storage options
+                                   <ul><li>provide proper tools for the job</li></ul>
+                                 </li>
+                                </ul>
+                        </section>
+                              
+                                <section>
+                                       <h2>‘everything is a resource’</h2>
+                                       <ul>
+                                         <li>datastores are exposed as a resource like everything else in LiveOak</li>
+                                         <li>over REST and messaging (STOMP)</li>
+                                         <li>json & html representations</li>
+                                         <li>uses the same services as any other resource
+                                           <ul><li>security, interceptors, business logic, etc.</li></ul>
+                                         </li>
+                                       </ul>
+                                </section>
+                                
+                                <section>
+                                      <h2><a href="#">[MongoDB]</a></h2>
+                                      <h2>Document Storage</h2>
+                                </section>
+ 
+                                <section>
+                                  <img width="90%" src="images/liveoak-single-mongo.png"></img>
+                                </section>
+
+                                <section>
+                                  <img width="90%" src="images/liveoak-multiple-mongo.png"></img>
+                                </section>
+
+                                <section>
+                                       <h2>Mongo Module</h2>
+                                       <ul>
+                                         <li>acts as client to the MongoDB database</li>
+                                         <li>configuration options similar to any other MongoDB client</li>
+                                         <li>can expose multiple MongoDB servers and databases</li>
+                                       </ul>
+                                </section>     
+
+                                <section>
+                                       <h2>Mongo Endpoint</h2>
+                                       <ul>
+                                         <li>Default endpoint <ul><li>/storage</li></ul></li>
+                                         <li>An endpoint represents a single database</li>
+                                         <li>Exposes data without adding extra cruft</li>
+                                       </ul>
+                                </section>
+
+                                <section>
+                                       <h2>Mongo Endpoint</h2>
+                                       <ul>
+                                         <li class="fragment">/storage <small class="fragment current-visible">- a database -</small></li>
+                                         <li class="fragment">/storage/myCollection</li>
+                                         <li class="fragment">/storage/myCollection/myDoc</li>
+                                       </ul>
+                                </section>
+
+                                <section>
+                                       <h2>Basic Operations</h2>
+                                       <ul>
+                                         <li>LiveOak Resources
+                                           <ul>
+                                             <li>CRUD operations</li>
+                                             <li>Field selection and expansion</li>
+                                             <li>Offset & limit</li>
+                                             <li>Sort</li>
+                                           </ul>
+                                         </li>
+                                         <li>Mongo Module Specifics<ul><li>Query, Aggregation</li></ul></li>
+                                       </ul>
+                                </section>
+
+                                <section>
+                                       <h2>Basic CRUD Demo</h2>
+                                </section>
+            
+                                <section>
+                                       <h2>Expand and Fields</h2>
+                                       <ul>
+                                         <li>Expand: shows a referenced object
+                                           <ul>
+                                             <li>/storage/foo?expand=members</li>
+                                           </ul>
+                                         </li>
+                                         <li>Fields: specify fields to return
+                                           <ul>
+                                             <li>/storage/foo/abc?fields=price</li>
+                                             <li>/storage/foo?fields=*(price,type)</li>
+                                             <li>/storage/foo?fields=*(*)</li>
+                                           </ul>
+                                         </li>
+                                       </ul>
+                                </section>
+
+                                <section>
+                                       <h2>Offset & Limit, Sort</h2>
+                                       <ul>
+                                         <li>Offset & Limit
+                                           <ul>
+                                             <li>/storage/foo?offset=50&limit=10</li>
+                                           </ul>
+                                         </li>
+                                         <li>Sort
+                                           <ul>
+                                             <li>/storage/foo?sort=price (ascending)</li>
+                                             <li>/storage/foo?sort=-price (descending)</li>
+                                           </ul>
+                                         </li>
+                                       </ul>
+                                </section>
+
+                                <section>
+                                       <h2>Query</h2>
+                                       <ul>
+                                         <li>uses the ‘q’ query parameter</li>
+                                         <li>MongoDB Specific
+                                           <ul>
+                                             <li><u>URL encoded</u> mongo query object</li>
+                                           </ul>
+                                         </li>
+                                         <li>/storage/products?q=<b style="color:#13daec">{price:{$lt:350}}</b></li>
+                                         <li class="fragment">/storage/products?q=<b style="color:#13daec">%7Bprice%3A%7B%24lt%3A350%7D%7D</b></li>
+                                       </ul>
+                                </section>
+
+                               <section>
+                                       <h2>Aggregation</h2>
+                                       <ul>
+                                         <li>Aggregate query results aren’t collection items, therefore a different endpoint
+                                           <ul>
+                                             <li>/storage/collection/_aggregate</li>
+                                           </ul>
+                                         </li>
+                                         <li>What does this aggregate query do:
+                                           <ul>
+                                             <li style="color: #13daec">?q=[{$group:{_id:{country:'$country'},numPeople:{$sum:1}}}]</li>
+                                           </ul>
+                                         </li>
+                                         <li>Demo using Aggregation</li>
+                                       </ul>
+                                </section>
+
+                                <section>
+                                       <h2>Referencing Documents: MongoDB</h2>
+                                       <ul>
+                                         <li>Manual Storage
+                                           <ul>
+                                             <li>manually store id in a document</li>
+                                             <li>fetch original document and request the other based on id</li>
+                                           </ul>
+                                         </li>
+                                         <li>DBRef
+                                           <ul>
+                                             <li>special object in MongoDB</li>
+                                             <li>normally has support built in to the mongo clients</li>
+                                             <li>same fetch and request linked document lifecycle</li>
+                                             <li>DBRef("collectionName", "id")</li>
+                                           </ul>
+                                         </li>
+                                       </ul>
+                                </section>
+
+                                <section>
+                                       <h2>DBRefs in LiveOak</h2>
+                                       <ul>
+                                         <li>Create/Update
+                                           <ul>
+                                             <li style="color: #13daec">fieldName: {“$dbref” : “/storage/collectionName/id”}</li>
+                                           </ul>
+                                         </li>
+                                         <li>Read
+                                           <ul>
+                                             <li>
+<pre><code>fieldName : {
+   "id" : "[id]",
+   "self" : { "href" : "/storage/collectionName/id"}
+}
+</code></pre>
+</li>
+                                           </ul>
+                                         </li>
+                                       </ul>
+                                </section>
+
+
+                                <section>
+                                       <h2>Advanced Features & Debugging</h2>
+                                       <ul>
+                                         <li>hint: specify which index to use
+                                           <ul>
+                                             <li>../myCollection?sort=price&hint=price_1</li>
+                                           </ul>
+                                         </li>
+                                         <li>explain: output what was used for a query
+                                           <ul>
+                                             <li>./myCollection?sort=price&explain=true</li>
+                                           </ul>
+                                         </li>
+                                         <li>Per request write concerns<small>coming soon</small>
+                                           <ul>
+                                             <li>../myCollection?wc={w:”majority”}</li>
+                                             <li>../myCollection?wc={w:”1”, j:true, …}</li>
+                                           </ul>
+                                         </li>
+
+                                       </ul>
+                                </section>
+
+                                <section>
+                                       <h2>Business Logic Hooks <small>(coming soon)</small></h2>
+                                       <ul>
+                                         <li>pre & post methods for the various resource operations
+                                           <ul>
+                                             <li>readProperties, updateProperties, createMember, readMember, delete</li>
+                                           </ul>
+                                         </li>
+                                         <li>initially javascript based, future polyglot</li>
+                                         <li>main use case for data storage: field verification for dynamic schema databases</li>
+                                       </ul>
+                                </section>
+
+                                <section>
+                                      <h2><a href="#">[MongoDB]</a></h2>
+                                      <h2>Blob Storage</h2>
+                                </section>
+
+                                <section>
+                                       <h2>Wrap-Up</h2>
+                                       <ul>
+                                         <li>Still a work in progress, things may change</li>
+                                         <li>Things actively being worked on
+                                           <ul>
+                                             <li>wrapping up configuration options</li>
+                                             <li>business logic hooks</li>
+                                             <li>bundled deployment of mongo</li>
+                                             <li>...</li>
+                                           </ul>
+                                         </li>
+                                       </ul>
+                                </section>
+                               
+                                <section>
+                                       <h2>Future Work</h2>
+                                       <ul>
+                                         <li>Support other data storages</li>
+                                         <li>Generic, simplified resource queries
+                                           <ul>
+                                             <li>not database specific</li>
+                                           </ul>
+                                         </li>
+                                         <li>Optimize and improve overall experience</li>
+                                       </ul>
+                                </section>
+ 
+ 
+                                <section>
+                                  <img width="85%" src="images/liveoak-tree-discussions.png"></img>
+                                  <p><small><small><a href="http://upload.wikimedia.org/wikipedia/commons/3/38/Live_oak.JPG?uselang=en-gb">Image</a>: Author: Lector avidus; License: <a href="http://creativecommons.org/licenses/by-sa/3.0/deed.en">Creative Commons Attribution-Share Alike 3.0 Unported</a></small></small></p>
+                                </section>
+
+
+
+<!--				<section>
 					<h2>Heads Up</h2>
 					<p>
 						reveal.js is a framework for easily creating beautiful presentations using HTML. You'll need a browser with
@@ -55,9 +338,9 @@
 						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
 					</aside>
 				</section>
-
+-->
 				<!-- Example of nested vertical slides -->
-				<section>
+<!--				<section>
 					<section>
 						<h2>Vertical Slides</h2>
 						<p>
@@ -347,7 +630,7 @@ function linkify( selector ) {
 					<h1>THE END</h1>
 					<h3>BY Hakim El Hattab / hakim.se</h3>
 				</section>
-
+-->
 			</div>
 
 		</div>
@@ -367,6 +650,7 @@ function linkify( selector ) {
 
 				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
 				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+                                minScale: 1.25,maxScale: 2.0,
 
 				// Parallax scrolling
 				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
